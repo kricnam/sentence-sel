@@ -18,7 +18,7 @@
 (def app-routes
   (routes
     (-> #'home-routes
-        (wrap-routes middleware/wrap-csrf)
+        ;;(wrap-routes middleware/wrap-csrf)
         (wrap-routes middleware/wrap-formats))
     #'service-routes
     (route/not-found

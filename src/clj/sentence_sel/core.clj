@@ -5,7 +5,9 @@
             [sentence-sel.config :refer [env]]
             [clojure.tools.cli :refer [parse-opts]]
             [clojure.tools.logging :as log]
+            [clojure.java.io :as io]
             [mount.core :as mount])
+  (:use [clojure.java.browse])
   (:gen-class))
 
 (def cli-options
@@ -28,8 +30,8 @@
                 (when-let [nrepl-port (env :nrepl-port)]
                   (repl/start {:port nrepl-port}))
                 :stop
-                (when repl-server
-                  (repl/stop repl-server)))
+  (when repl-server
+    (repl/stop repl-server)))
 
 
 (defn stop-app []
@@ -44,8 +46,14 @@
                         :started)]
     (log/info "start..................")
     (log/info component "started")
+    
     )
-  (.addShutdownHook (Runtime/getRuntime) (Thread. stop-app)))
+  (.addShutdownHook (Runtime/getRuntime) (Thread. stop-app))
+  (if-not (.exist (io/file "uploads"))
+    (io/make-parents "uploads/d")
+    )
+  (browse-url "http://localhost:3300")
+  )
 
 (defn -main [& args]
   (start-app args))
