@@ -49,7 +49,7 @@
     
     )
   (.addShutdownHook (Runtime/getRuntime) (Thread. stop-app))
-  (if-not (.exist (io/file "uploads"))
+  (if-not (.exists (io/file "uploads"))
     (io/make-parents "uploads/d")
     )
   (browse-url "http://localhost:3300")
