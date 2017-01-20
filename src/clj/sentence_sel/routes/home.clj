@@ -3,9 +3,10 @@
             [compojure.core :refer [defroutes GET POST]]
             [ring.util.http-response :as response]
             [clojure.tools.logging :as log]
-            [clojure.java.io :as io])
-  (:import [java.io File FileInputStream FileOutputStream])
-  )
+            [clojure.java.io :as io]
+            [mount.core :as mount])
+  (:import [java.io File FileInputStream FileOutputStream]))
+  
 
 (defn home-page []
   (layout/render
@@ -30,9 +31,23 @@
          })))
   )
 
+(defn stop []
+  (doseq [component (:stopped (mount/stop))]
+    (log/info component "stopped"))
+  (shutdown-agents)
+  (System/exit 0)
+  )
+
+(defn exit-page []
+  (future stop)
+  {:status 200
+   :body "EXIT"}
+  )
+
 (defroutes home-routes
   (GET "/" [] (home-page))
   (GET "/about" [] (about-page))
+  (GET "/exit" [] (exit-page))
   (POST "/save.php" [video-filename video-blob] (save-webm video-filename video-blob))
   )
 
