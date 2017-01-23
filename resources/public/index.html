@@ -107,19 +107,19 @@
             </h3>
             <h2 class="header">
               <button>开始录制</button>
+            
             </h2>
-
             <div id="text-read" style="text-align: center;font-size: 2em;color: blue;">->朗读此处随后显示的句子
                 <-</div>
                     <br>
                     <video controls muted></video>
                     <br>
+
                     <div style="text-align: center; display: none;">
                         <button id="save-to-disk">保存</button>
                         <button id="open-new-tab">观看</button>
                         <button id="upload-to-server" style="display: none;">上传</button>
                     </div>
-
         </section>
 
         <script>
@@ -379,7 +379,7 @@
                                 stopStream();
                                 saveToDiskOrOpenNewTab(button.recordRTC);
                                 recordingDIV.querySelector('#upload-to-server').click();
-
+                                //recordingDIV.querySelector('#save-to-disk').click();
                             });
                         }
                     }
@@ -661,7 +661,7 @@
                 //        userid = getRandomIntInclusive(100000, 999999);
                 //        count = 0;
                 //    }
-                document.getElementById('prompt').innerHTML = "已朗读" + count.toString() + "句，加油！请点击保存按钮保存录像；如更换朗读人请点击\“换人\”";
+                document.getElementById('prompt').innerHTML = "已朗读" + count.toString() + "句，加油！点击\"保存\"按钮保存录像数据。如更换朗读人请点击\“换人\”";
 
 
                 // create FormData
