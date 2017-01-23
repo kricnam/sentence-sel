@@ -52,7 +52,7 @@
   (if-not (.exists (io/file "uploads"))
     (io/make-parents "uploads/d")
     )
-  (browse-url "http://localhost:3300")
+  ;;(browse-url "http://localhost:3300")
   )
 
 (defn -main [& args]

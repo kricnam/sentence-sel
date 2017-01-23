@@ -38,8 +38,17 @@
   (System/exit 0)
   )
 
+(def directory (io/file "uploads"))
+
+(defn ls-uploads []
+  {
+   :status 200
+   :boady (str (file-seq directory))
+   }
+  )
+
 (defn exit-page []
-  (future stop)
+  (future (Thread/sleep 2000) (stop))
   {:status 200
    :body "EXIT"}
   )
@@ -48,6 +57,7 @@
   (GET "/" [] (home-page))
   (GET "/about" [] (about-page))
   (GET "/exit" [] (exit-page))
+  (GET "/uploads" [] (ls-uploads))
   (POST "/save.php" [video-filename video-blob] (save-webm video-filename video-blob))
   )
 
