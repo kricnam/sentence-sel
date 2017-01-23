@@ -43,7 +43,7 @@
 (defn ls-uploads []
   {
    :status 200
-   :boady (str (file-seq directory))
+   :boady [:html   (for [i (file-seq directory)] (str (.getName i)))]
    }
   )
 

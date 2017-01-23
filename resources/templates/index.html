@@ -25,7 +25,7 @@
             border-radius: 1px;
             font-size: 2em;
             margin: .2em;
-            width: 30%;
+            width: 60%;
         }
         
         p,
@@ -41,7 +41,7 @@
         
         label {
             display: inline-block;
-            width: 8em;
+            width: 3em;
         }
         
         .recordrtc button {
@@ -53,7 +53,7 @@
             vertical-align: middle;
             line-height: 1;
             padding: 2px 5px;
-            height: auto;
+        height: auto;
             font-size: inherit;
             margin: 0;
         }
@@ -66,7 +66,7 @@
         }
         
         .recordrtc video {
-            width: 60%;
+            width: 50%;
         }
         
         .recordrtc option[disabled] {
@@ -87,19 +87,25 @@
               视频样本采集
         </h1>
         </header>
-        <div>
-          <br/><label>编号：</label><input style="font-size: 1em" id="wid"></input><button id="change" style="font-size: 1em" onclick="location.reload()">换人</button>
-        </div>
-        <section class="experiment recordrtc" style="font-size:0.8em">
-            <div>本页面仅支持FireFox Chrome或兼容浏览器。<a href="FirefoxSetup50.1.0.exe">下载</a></div>
-            <h2 class="header">
+        
+          
+          <section class="experiment recordrtc" style="font-size:0.8em">
+            
+            <div>本页面仅支持FireFox或Chrome或兼容浏览器。如开始录制后，无摄象头图像出现，推荐下载<a href="http://www.google.cn/chrome/browser/desktop/index.html">Chrome浏览器</a></div>
+            <div>
+              <label>编号：</label><input style="font-size: 1em" id="wid"></input><a onclick="location.reload()">换人</a>
+            </div>
+            <h3>
               <select class="recording-media" style="display: none">
             <option value="record-audio-plus-video">Microphone+Camera</option>
-          </select>
+              </select>
                <select class="media-container-format" style="display: none">
             <option>WebM</option>
-              </select>
+               </select>
+               
                <div id="prompt">按下开始录制按钮,待出现视频影像后，朗读下面蓝色字体的句子；<br/>朗读结束后,再次按下按钮停止录制或不做任何操作等待自动结束。</div>
+            </h3>
+            <h2  class="header">
               <button>开始录制</button>
             </h2>
 
@@ -109,9 +115,9 @@
                     <video controls muted></video>
                     <br>
                     <div style="text-align: center; display: none;">
-                        <button id="save-to-disk" style="display: none">保存</button>
+                        <button id="save-to-disk">保存</button>
                         <button id="open-new-tab">观看</button>
-                        <button id="upload-to-server" style="display: none">上传</button>
+                        <button id="upload-to-server" style="display: none;">上传</button>
                     </div>
 
         </section>
@@ -208,11 +214,11 @@
                 mediaContainerFormat.disabled = false;
             };
 
-            window.onkeydown = function(e) {
-            　　var cKey = 0;
-            var e = e||event;
-            cKey =e.keyCode||e.which||e.charCode;
-            if (32 == cKey) {　　　　　　　　　　
+            window.onkeydown = function(e) {　　
+                var cKey = 0;
+                var e = e || event;
+                cKey = e.keyCode || e.which || e.charCode;
+                if (32 == cKey) {　　　　　　　　　　
                     recordingDIV.querySelector('button').click();
                 }
             }
@@ -400,7 +406,7 @@
                         ttimeout = setTimeout(function() {
                             if (button.innerHTML === '停止录制')
                                 button.click();
-                        }, 10 * 1000);
+                        }, 12 * 1000);
                     };
                 }
 
@@ -468,7 +474,7 @@
                 // webp isn't supported in Microsoft Edge
                 // neither MediaRecorder API
                 // so lets disable both video/screen recording options
-                alert('不支持此浏览器，请使用firefox');
+                alert('不支持此浏览器，请使用chrome 或 firefox');
                 console.warn('Neither MediaRecorder API nor webp is supported in Microsoft Edge. You cam merely record audio.');
 
                 recordingMedia.innerHTML = '<option value="record-audio">Audio</option>';
@@ -480,8 +486,12 @@
                 recordingDIV.querySelector('#save-to-disk').parentNode.style.display = 'block';
                 recordingDIV.querySelector('#save-to-disk').onclick = function() {
                     if (!recordRTC) return alert('No recording found.');
+                    var wid = trim(document.getElementById('wid').value);
+                    if (!wid) wid = "0";
+                    console.info(wid);
+                    var fileName = wid + "-" + userid + "-" + index.toString() + "-" + count.toString();
 
-                    recordRTC.save();
+                    recordRTC.save(fileName);
                 };
 
                 recordingDIV.querySelector('#open-new-tab').onclick = function() {
@@ -539,7 +549,7 @@
                     userid = getRandomIntInclusive(100000, 999999);
                     count = 0;
                 }
-                document.getElementById('prompt').innerHTML = "已朗读" + count.toString() + "句，加油";
+                document.getElementById('prompt').innerHTML = "已朗读" + count.toString() + "句，加油！如更换朗读人请点击\“换人\”";
 
 
                 // create FormData
