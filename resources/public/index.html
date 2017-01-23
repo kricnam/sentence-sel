@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+
+<head>
+    <title>视频样本采集</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        audio {
+            vertical-align: bottom;
+            width: 10em;
+        }
+        
+        video {
+            max-width: 100%;
+            vertical-align: top;
+        }
+        
+        input {
+            border: 1px solid #d9d9d9;
+            border-radius: 1px;
+            font-size: 2em;
+            margin: .2em;
+            width: 60%;
+        }
+        
+        p,
+        .inner {
+            padding: 1em;
+        }
+        
+        li {
+            border-bottom: 1px solid rgb(189, 189, 189);
+            border-left: 1px solid rgb(189, 189, 189);
+            padding: .5em;
+        }
+        
+        label {
+            display: inline-block;
+            width: 3em;
+        }
+        
+        .recordrtc button {
+            font-size: inherit;
+        }
+        
+        .recordrtc button,
+        .recordrtc select {
+            vertical-align: middle;
+            line-height: 1;
+            padding: 2px 5px;
+            height: auto;
+            font-size: inherit;
+            margin: 0;
+        }
+        
+        .recordrtc,
+        .recordrtc .header {
+            display: block;
+            text-align: center;
+            padding-top: 0;
+        }
+        
+        .recordrtc video {
+            width: 50%;
+        }
+        
+        .recordrtc option[disabled] {
+            display: none;
+        }
+    </style>
+
+    <script src="js/RecordRTC.js"></script>
+    <!-- for Edige/FF/Chrome/Opera/etc. getUserMedia support -->
+    <script src="js/gumadapter.js"></script>
+    <script src="js/jquery-3.1.1.min.js"></script>
+</head>
+
+<body>
+    <article>
+        <header style="text-align: center;">
+            <h1>
+              视频样本采集
+        </h1>
+        </header>
+
+
+        <section class="experiment recordrtc" style="font-size:0.8em">
+
+            <div>本页面仅支持FireFox或Chrome或兼容浏览器。开始录制后，若视频图像未出现，建议使用<a href="http://www.google.cn/chrome/browser/desktop/index.html">Chrome浏览器</a></div>
+            <div>
+                <label>编号：</label><input style="font-size: 1em" id="wid"></input><a onclick="location.reload()">换人</a>
+            </div>
+            <h3>
+              <select class="recording-media" style="display: none">
+            <option value="record-audio-plus-video">Microphone+Camera</option>
+              </select>
+               <select class="media-container-format" style="display: none">
+            <option>WebM</option>
+               </select>
+               
+               <div id="prompt">按下开始录制按钮,待出现视频影像后，朗读下面蓝色字体的句子；<br/>朗读结束后,再次按下按钮停止录制或不做任何操作等待自动结束。<br/>可使用空格键，启动或停止录像</div>
+            </h3>
+            <h2 class="header">
+              <button>开始录制</button>
+            </h2>
+
+            <div id="text-read" style="text-align: center;font-size: 2em;color: blue;">->朗读此处随后显示的句子
+                <-</div>
+                    <br>
+                    <video controls muted></video>
+                    <br>
+                    <div style="text-align: center; display: none;">
+                        <button id="save-to-disk">保存</button>
+                        <button id="open-new-tab">观看</button>
+                        <button id="upload-to-server" style="display: none;">上传</button>
+                    </div>
+
+        </section>
+
+        <script>
+            (function() {
+                var params = {},
+                    r = /([^&=]+)=?([^&]*)/g;
+
+                function d(s) {
+                    return decodeURIComponent(s.replace(/\+/g, ' '));
+                }
+
+                var match, search = window.location.search;
+                while (match = r.exec(search.substring(1))) {
+                    params[d(match[1])] = d(match[2]);
+
+                    if (d(match[2]) === 'true' || d(match[2]) === 'false') {
+                        params[d(match[1])] = d(match[2]) === 'true' ? true : false;
+                    }
+                }
+
+                window.params = params;
+                $("#wid").val('xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                    var r = Math.random() * 16 | 0,
+                        v = c == 'x' ? r : (r & 0x3 | 0x8);
+                    return v.toString(16);
+                }));
+            })();
+
+            var jufra = new Array(
+                "要对国家法律法规存有敬畏之心",
+                "严格遵守国家法律法规规章制度",
+                "要对领导长辈存有敬畏之心",
+                "慈悲之心要以诚待人与人为善",
+                "坚持以人为本、和谐共赢",
+                "坚持追求绩效、不断提高",
+                "坚持开拓创新、勇于探索",
+                "坚持实事求是、诚实守信",
+                "坚持认真负责、敢于担当",
+                "国政通大家庭的主人翁精神",
+                "高效率快节奏的只争朝夕精神",
+                "创一流上水平的开拓创新精神",
+                "敢于吃苦耐劳的艰苦创业精神",
+                "识大体顾大局的无私奉献精神",
+                "坚持解决问题、闻过必改",
+                "导向性与实用性相结合",
+                "定性与定量相结合的工作方法",
+                "突出重点与兼顾一般相结合",
+                "胜过那丰收五谷新酒的人",
+                "你必将生命的道路指示我",
+                "慈爱的人，你以慈爱待他",
+                "完全的人，你以完全待他",
+                "愿你赦免我隐而未现的过错",
+                "你仅需轻描淡写的说出他的缺点",
+                "愚者自以为聪明，智者则有自知之明",
+                "不要向人借钱，也不要借钱给人",
+                "世上之事物本无善恶之分,思想使然",
+                "恋人们看不到自己做的傻事",
+                "得到即是完结,快乐的精髓在于过程",
+                "懦夫在未死以前就已经死了好多次",
+                "借钱出去，常常既丢了钱，也丢了朋友",
+                "所有的男男女女不过是一些演员",
+                "一个人的一生中扮演着好几个角色",
+                "离别是这样甜蜜的凄清",
+                "我真要向你道晚安直到天明!",
+                "让我们宣誓表示我们的决心",
+                "再让我一个一个握你们的手",
+                "他不知道谁和谁为什么打起架来了",
+                "幸而已经春天，棉被可以无用",
+                "渐渐觉得世上有些古怪",
+                "他忽而听得一种异样的声音",
+                "他似乎从来没有经验过这样的无聊",
+                "从此决不能望有白盔白甲的人来叫他",
+                "他曾在山脚下遇见一只饿狼",
+                "使人人见了便知你是件奇物",
+                "那娲皇只用了三万六千五百块",
+                "人生天地之间，若白驹过隙，忽然而已",
+                "来世不可待，往世不可追也",
+                "君子之交淡若水，小人之交甘若醴",
+                "朴素而天下莫能与之争美",
+                "吾生也有涯，而知也无涯",
+                "巧者劳而智者忧，无能者无所求",
+                "子非我，安知我不知鱼之乐",
+                "不可行恶人的路。不要走坏人的道",
+                "口吐真言，永远坚立。舌说谎话，只存片时。",
+                "今夜我们可共宴, 欢迎你们归国",
+                "看他埋头苦读的那付可怜样",
+                "我们需上法庭来判断此论吗",
+                "欲穷千里目，更上一层楼",
+                "只要工夫深，铁杵磨成针",
+                "任凭风浪起，稳坐钓鱼船",
+                "蜀中无大将，廖化作先锋",
+                "千里送鹅毛，礼轻情意重",
+                "哑巴吃黄连，有苦说不出",
+                "宁与千人好，莫与一人敌",
+                "留得青山在，不怕没柴烧",
+                "海内存知己，天涯若比邻",
+                "瓜田不纳履，李下不正冠",
+                "威武不能屈，贫贱不能移",
+                "好事不出门，恶事传千里",
+                "路遥知马力，日久见人心",
+                "朱门酒肉臭，路有冻死骨",
+                "一粥一饭，当思来处不易",
+                "野火烧不尽，春风吹又生",
+                "淡泊以明志，宁静以致远",
+                "以其人之道，还治其人之身",
+                "言之者无罪，闻之者足以戒",
+                "鸡犬之声相闻，老死不相往来",
+                "天有不测风云，人有旦夕祸福",
+                "运筹帷幄之中，决胜千里之外",
+                "少壮不努力，老大徒伤悲",
+                "天下本无事，庸人自扰之",
+                "福兮祸所伏，祸兮福所倚",
+                "前不见古人，后不见来者",
+                "只要功夫深，铁杵磨成针",
+                "鹬蚌相争，坐收渔翁之利",
+                "踏破铁鞋无觅处，得来全不费工夫",
+                "先天下之忧而忧，后天下之乐而乐",
+                "沉舟侧畔千帆过，病树前头万木春",
+                "平生不作亏心事，夜半敲门不吃惊",
+                "如入芝兰之室，久而不闻其香",
+                "与君一夕话，胜读十年书",
+                "只听楼梯响，不见人下来",
+                "故人西辞黄鹤楼，烟花三月下扬州",
+                "孤帆远影碧空尽，惟见长江天际流",
+                "开始的时侯，我们就知道，总会有终结",
+                "它的整体样子像一只大章鱼",
+                "浇水可不是想像中的那么简单",
+                "松树一年四季都那样挺拔",
+                "松果的身体就会缩起来"
+            );
+
+            function getRandomIntInclusive(min, max) {
+                min = Math.ceil(min);
+                max = Math.floor(max);
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+            }
+            var userid = getRandomIntInclusive(100000, 999999).toString();
+            var count = 0;
+            var index = 0;
+            console.info(userid);
+
+            function freshText() {
+                var base = $(location).attr('origin');
+                base = base + "/api/jufra";
+                $.ajax({
+                    url: base,
+                    error: function(xhr) {
+                        index = getRandomIntInclusive(0, 99);
+                        $('#text-read').text(jufra[index]);
+                        console.info(jufra[index]);
+                        index = index + 1;
+                        console.info(index);
+
+                    }
+                }).then(function(data) {
+                    var arr = data.split(':');
+                    index = arr[0];
+                    $('#text-read').text(arr[1]);
+                    console.info(data);
+                    console.info(index);
+                });
+            }
+
+
+
+
+            function addStreamStopListener(stream, callback) {
+                var streamEndedEvent = 'ended';
+
+                if ('oninactive' in stream) {
+                    streamEndedEvent = 'inactive';
+                }
+
+                stream.addEventListener(streamEndedEvent, function() {
+                    callback();
+                    callback = function() {};
+                }, false);
+
+                stream.getAudioTracks().forEach(function(track) {
+                    track.addEventListener(streamEndedEvent, function() {
+                        callback();
+                        callback = function() {};
+                    }, false);
+                });
+
+                stream.getVideoTracks().forEach(function(track) {
+                    track.addEventListener(streamEndedEvent, function() {
+                        callback();
+                        callback = function() {};
+                    }, false);
+                });
+            }
+
+            var recordingDIV = document.querySelector('.recordrtc');
+            var recordingMedia = recordingDIV.querySelector('.recording-media');
+            var recordingPlayer = recordingDIV.querySelector('video');
+            var mediaContainerFormat = recordingDIV.querySelector('.media-container-format');
+            var ttimeout;
+
+            window.onbeforeunload = function() {
+                recordingDIV.querySelector('button').disabled = false;
+                recordingMedia.disabled = false;
+                mediaContainerFormat.disabled = false;
+            };
+
+            window.onkeydown = function(e) {　　
+                var cKey = 0;
+                var e = e || event;
+                cKey = e.keyCode || e.which || e.charCode;
+                if (32 == cKey) {　　　　　　　　　　
+                    recordingDIV.querySelector('button').click();
+                }
+            }
+
+
+
+            recordingDIV.querySelector('button').onclick = function() {
+                var button = recordingDIV.querySelector('button');
+
+                if (button.innerHTML === '停止录制') {
+                    button.disabled = true;
+                    button.disableStateWaiting = true;
+                    clearTimeout(ttimeout);
+                    setTimeout(function() {
+                        button.disabled = false;
+                        button.disableStateWaiting = false;
+                    }, 2 * 1000);
+
+                    button.innerHTML = '开始录制';
+
+                    function stopStream() {
+                        if (button.stream && button.stream.stop) {
+                            button.stream.stop();
+                            button.stream = null;
+                        }
+                    }
+
+
+                    if (button.recordRTC) {
+                        if (button.recordRTC.length) {
+                            button.recordRTC[0].stopRecording(function(url) {
+                                if (!button.recordRTC[1]) {
+                                    button.recordingEndedCallback(url);
+                                    stopStream();
+                                    saveToDiskOrOpenNewTab(button.recordRTC[0]);
+                                    return;
+                                }
+
+                                button.recordRTC[1].stopRecording(function(url) {
+                                    button.recordingEndedCallback(url);
+                                    stopStream();
+                                });
+                            });
+                        } else {
+                            button.recordRTC.stopRecording(function(url) {
+                                button.recordingEndedCallback(url);
+                                stopStream();
+                                saveToDiskOrOpenNewTab(button.recordRTC);
+                                recordingDIV.querySelector('#upload-to-server').click();
+
+                            });
+                        }
+                    }
+
+                    return;
+                } else {
+                    freshText();
+                    recordingDIV.querySelector('#save-to-disk').parentNode.style.display = 'none';
+                }
+
+
+                button.disabled = true;
+
+                var commonConfig = {
+                    onMediaCaptured: function(stream) {
+                        button.stream = stream;
+                        if (button.mediaCapturedCallback) {
+                            button.mediaCapturedCallback();
+                        }
+
+                        button.innerHTML = '停止录制';
+                        button.disabled = false;
+                    },
+                    onMediaStopped: function() {
+                        button.innerHTML = '开始录制';
+
+                        if (!button.disableStateWaiting) {
+                            button.disabled = false;
+                        }
+                    },
+                    onMediaCapturingFailed: function(error) {
+                        if (error.name === 'PermissionDeniedError' && !!navigator.mozGetUserMedia) {
+                            InstallTrigger.install({
+                                'Foo': {
+                                    // https://addons.mozilla.org/firefox/downloads/latest/655146/addon-655146-latest.xpi?src=dp-btn-primary
+                                    URL: 'https://addons.mozilla.org/en-US/firefox/addon/enable-screen-capturing/',
+                                    toString: function() {
+                                        return this.URL;
+                                    }
+                                }
+                            });
+                        }
+
+                        commonConfig.onMediaStopped();
+                    }
+                };
+
+                var mimeType = 'video/webm';
+                if (mediaContainerFormat.value === 'Mp4') {
+                    mimeType = 'video/mp4; codecs=h264';
+                }
+
+                if (recordingMedia.value === 'record-audio-plus-video') {
+                    captureAudioPlusVideo(commonConfig);
+
+                    button.mediaCapturedCallback = function() {
+
+                        if (typeof MediaRecorder === 'undefined') { // opera or chrome etc.
+                            button.recordRTC = [];
+
+                            if (!params.bufferSize) {
+                                // it fixes audio issues whilst recording 720p
+                                params.bufferSize = 16384;
+                            }
+
+                            var audioRecorder = RecordRTC(button.stream, {
+                                type: 'audio',
+                                bufferSize: typeof params.bufferSize == 'undefined' ? 0 : parseInt(params.bufferSize),
+                                sampleRate: typeof params.sampleRate == 'undefined' ? 44100 : parseInt(params.sampleRate),
+                                leftChannel: params.leftChannel || false,
+                                disableLogs: params.disableLogs || false,
+                                recorderType: webrtcDetectedBrowser === 'edge' ? StereoAudioRecorder : null
+                            });
+
+                            var videoRecorder = RecordRTC(button.stream, {
+                                type: 'video',
+                                disableLogs: params.disableLogs || false,
+                                canvas: {
+                                    width: 640,
+                                    height: 480
+                                },
+
+                                frameInterval: typeof params.frameInterval !== 'undefined' ? parseInt(params.frameInterval) : 20 // minimum time between pushing frames to Whammy (in milliseconds)
+                            });
+
+                            // to sync audio/video playbacks in browser!
+                            videoRecorder.initRecorder(function() {
+                                audioRecorder.initRecorder(function() {
+                                    audioRecorder.startRecording();
+                                    videoRecorder.startRecording();
+                                });
+                            });
+
+                            button.recordRTC.push(audioRecorder, videoRecorder);
+
+                            button.recordingEndedCallback = function() {
+                                var audio = new Audio();
+                                audio.src = audioRecorder.toURL();
+                                audio.controls = true;
+                                audio.autoplay = true;
+
+                                audio.onloadedmetadata = function() {
+                                    recordingPlayer.src = videoRecorder.toURL();
+                                    recordingPlayer.play();
+                                };
+
+                                recordingPlayer.parentNode.appendChild(document.createElement('hr'));
+                                recordingPlayer.parentNode.appendChild(audio);
+
+                                if (audio.paused) audio.play();
+                            };
+                            return;
+                        }
+
+                        button.recordRTC = RecordRTC(button.stream, {
+                            type: 'video',
+                            mimeType: mimeType,
+                            disableLogs: params.disableLogs || false,
+                            getNativeBlob: false,
+                            //sampleRate: 2097152,
+                        });
+
+                        button.recordingEndedCallback = function(url) {
+                            recordingPlayer.src = url;
+                            recordingPlayer.removeAttribute('muted');
+                            recordingPlayer.muted = false;
+                            recordingPlayer.play();
+
+                            recordingPlayer.onended = function() {
+                                recordingPlayer.pause();
+                                recordingPlayer.src = URL.createObjectURL(button.recordRTC.blob);
+                            };
+                        };
+
+                        button.recordRTC.startRecording();
+                        ttimeout = setTimeout(function() {
+                            if (button.innerHTML === '停止录制')
+                                button.click();
+                        }, 12 * 1000);
+                    };
+                }
+
+            };
+
+            function captureAudioPlusVideo(config) {
+                captureUserMedia({
+                    video: true,
+                    audio: true
+                }, function(audioVideoStream) {
+                    recordingPlayer.srcObject = audioVideoStream;
+                    recordingPlayer.play();
+
+                    config.onMediaCaptured(audioVideoStream);
+
+
+                    addStreamStopListener(audioVideoStream, function() {
+                        config.onMediaStopped();
+                    });
+                }, function(error) {
+                    config.onMediaCapturingFailed(error);
+                });
+            }
+
+            function captureUserMedia(mediaConstraints, successCallback, errorCallback) {
+                var isBlackBerry = !!(/BB10|BlackBerry/i.test(navigator.userAgent || ''));
+                if (isBlackBerry && !!(navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia)) {
+                    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+                    navigator.getUserMedia(mediaConstraints, successCallback, errorCallback);
+                    return;
+                }
+                navigator.mediaDevices.getUserMedia(mediaConstraints).then(successCallback).catch(errorCallback);
+            }
+
+            function setMediaContainerFormat(arrayOfOptionsSupported) {
+                var options = Array.prototype.slice.call(
+                    mediaContainerFormat.querySelectorAll('option')
+                );
+
+                var selectedItem;
+                options.forEach(function(option) {
+                    option.disabled = true;
+
+                    if (arrayOfOptionsSupported.indexOf(option.value) !== -1) {
+                        option.disabled = false;
+
+                        if (!selectedItem) {
+                            option.selected = true;
+                            selectedItem = option;
+                        }
+                    }
+                });
+            }
+
+            recordingMedia.onchange = function() {
+                if (this.value === 'record-audio') {
+                    setMediaContainerFormat(['WAV', 'Ogg']);
+                    return;
+                }
+                setMediaContainerFormat(['WebM', 'Mp4']);
+            };
+            recordingMedia.onchange();
+
+            if (webrtcDetectedBrowser === 'edge') {
+                // webp isn't supported in Microsoft Edge
+                // neither MediaRecorder API
+                // so lets disable both video/screen recording options
+                alert('不支持此浏览器，请使用chrome 或 firefox');
+                console.warn('Neither MediaRecorder API nor webp is supported in Microsoft Edge. You cam merely record audio.');
+
+                recordingMedia.innerHTML = '<option value="record-audio">Audio</option>';
+                setMediaContainerFormat(['WAV']);
+            }
+
+            function saveToDiskOrOpenNewTab(recordRTC) {
+
+                recordingDIV.querySelector('#save-to-disk').parentNode.style.display = 'block';
+                recordingDIV.querySelector('#save-to-disk').onclick = function() {
+                    if (!recordRTC) return alert('No recording found.');
+                    var wid = trim(document.getElementById('wid').value);
+                    if (!wid) wid = "0";
+                    console.info(wid);
+                    var fileName = wid + "-" + userid + "-" + index.toString() + "-" + count.toString();
+
+                    recordRTC.save(fileName);
+                };
+
+                recordingDIV.querySelector('#open-new-tab').onclick = function() {
+                    if (!recordRTC) return alert('No recording found.');
+                    window.open(recordRTC.toURL());
+                };
+                recordingDIV.querySelector('#open-new-tab').disabled = false;
+
+                recordingDIV.querySelector('#upload-to-server').disabled = false;
+                recordingDIV.querySelector('#upload-to-server').onclick = function() {
+                    console.info('Upload....');
+                    if (!recordRTC) return alert('No recording found.');
+                    //this.disabled = true;
+
+                    var button = this;
+                    uploadToServer(recordRTC, function(progress, fileURL) {
+                        if (progress === 'ended') {
+                            button.disabled = false;
+                            button.innerHTML = 'Click to download from server';
+                            button.onclick = function() {
+                                window.open(fileURL);
+                            };
+                            return;
+                        }
+                        button.innerHTML = progress;
+                    });
+                };
+
+
+            }
+
+            var listOfFilesUploaded = [];
+
+            function trim(str) {
+                return str.replace(/(^\s+)|(\s+$)/g, "");
+            }
+
+            function uploadToServer(recordRTC, callback) {
+                console.info("in upload");
+                var wid = trim(document.getElementById('wid').value);
+
+                if (!wid) wid = "0";
+                console.info(wid);
+                var blob = recordRTC instanceof Blob ? recordRTC : recordRTC.blob;
+                var fileType = blob.type.split('/')[0] || 'audio';
+                var fileName = wid + "-" + userid + "-" + index.toString() + "-" + count.toString();
+                count += 1;
+                if (fileType === 'audio') {
+                    fileName += '.' + (!!navigator.mozGetUserMedia ? 'ogg' : 'wav');
+                } else {
+                    fileName += '.webm';
+                }
+                console.info(fileName);
+                //if (count === 10) {
+                //        userid = getRandomIntInclusive(100000, 999999);
+                //        count = 0;
+                //    }
+                document.getElementById('prompt').innerHTML = "已朗读" + count.toString() + "句，加油！请点击保存按钮保存录像；如更换朗读人请点击\“换人\”";
+
+
+                // create FormData
+                var formData = new FormData();
+                formData.append(fileType + '-filename', fileName);
+                formData.append(fileType + '-blob', blob);
+
+                callback('Uploading ' + fileType + ' recording to server.');
+
+                makeXMLHttpRequest('save.php', formData, function(progress) {
+                    if (progress !== 'upload-ended') {
+                        callback(progress);
+                        return;
+                    }
+
+                    var initialURL = location.href.replace(location.href.split('/').pop(), '') + 'uploads/';
+
+                    callback('ended', initialURL + fileName);
+
+                    // to make sure we can delete as soon as visitor leaves
+                    listOfFilesUploaded.push(initialURL + fileName);
+                });
+            }
+
+            function makeXMLHttpRequest(url, data, callback) {
+                var request = new XMLHttpRequest();
+                request.onreadystatechange = function() {
+                    if (request.readyState == 4 && request.status == 200) {
+                        callback('upload-ended');
+                    }
+                };
+                console.info(url);
+                request.upload.onloadstart = function() {
+                    callback('Upload started...');
+                };
+
+                request.upload.onprogress = function(event) {
+                    callback('Upload Progress ' + Math.round(event.loaded / event.total * 100) + "%");
+                };
+
+                request.upload.onload = function() {
+                    callback('progress-about-to-end');
+                };
+
+                request.upload.onload = function() {
+                    callback('progress-ended');
+                };
+
+                request.upload.onerror = function(error) {
+                    callback('Failed to upload to server');
+                    console.error('XMLHttpRequest failed', error);
+                };
+
+                request.upload.onabort = function(error) {
+                    callback('Upload aborted.');
+                    console.error('XMLHttpRequest aborted', error);
+                };
+
+                request.open('POST', url);
+                request.send(data);
+            }
+        </script>
+
+    </article>
+
+    <footer>
+        <p>
+            © <a href="http://www.id5.cn">id5.cn</a>
+        </p>
+    </footer>
+
+
+
+</html>
