@@ -40,11 +40,20 @@
 
 (def directory (io/file "uploads"))
 
-(defn ls-uploads [filename]
+(defn ls-uploads []
   {
    :status 200
    :body [:h1   (for [i (file-seq directory)] (str (.getName i)))]
    }
+  )
+(defn download-file [filename]
+  
+  )
+
+(defn uploads [filename]
+  (if (empty? filename)
+    (ls-uploads)
+    (download-file filename))
   )
 
 (defn exit-page []
