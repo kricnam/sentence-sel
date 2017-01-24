@@ -46,13 +46,7 @@
   )
 
 (defn download-file [filename]
-  
-  )
-
-(defn uploads [filename]
-  (if (empty? filename)
-    (ls-uploads)
-    (download-file filename))
+  (response/file-response (str "uploads/" filename))
   )
 
 (defn exit-page []
@@ -65,7 +59,7 @@
   (GET "/" [] (home-page))
   (GET "/about" [] (about-page))
   (GET "/exit" [] (exit-page))
-  (GET "/uploads/:filename" [filename] (ls-uploads filename))
+  (GET "/uploads/:filename" [filename] (download-file filename))
   (POST "/save.php" [video-filename video-blob] (save-webm video-filename video-blob))
   )
 
