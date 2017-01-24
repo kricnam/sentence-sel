@@ -606,7 +606,7 @@
                     uploadToServer(recordRTC, function(progress, fileURL) {
                         if (progress === 'ended') {
                             button.disabled = false;
-                            button.innerHTML = 'Click to download from server';
+                            button.innerHTML = '上传完成100%，点击下载';
                             button.onclick = function() {
                                 window.open(fileURL);
                             };
@@ -683,7 +683,8 @@
                 };
 
                 request.upload.onprogress = function(event) {
-                    callback('上传进度 ' + Math.round(event.loaded / event.total * 100) + "%");
+                    console.log(event.loaded)
+                    callback('上传中... ' + Math.round(event.loaded / event.total * 100.0 - 20)  + "%");
                 };
 
                 request.upload.onload = function() {
@@ -691,11 +692,11 @@
                 };
 
                 request.upload.onload = function() {
-                    callback('上传进度 100%');
+                    callback('上传中...');
                 };
 
                 request.upload.onerror = function(error) {
-                    callback('Failed to upload to server');
+                    callback('上传失败，点击重传');
                     console.error('XMLHttpRequest failed', error);
                 };
 

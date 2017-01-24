@@ -25,10 +25,8 @@
         (.flush out)
         (.close in)
         (.delete tempfile)
-        {
-         :status 200
-         :body (str "uploads/" filename)
-         })))
+        (reponse/ok (str "uploads/" filename))
+                  )))
   )
 
 (defn stop []
