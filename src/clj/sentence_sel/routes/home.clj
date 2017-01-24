@@ -25,7 +25,7 @@
         (.flush out)
         (.close in)
         (.delete tempfile)
-        (reponse/ok (str "uploads/" filename))
+        (->  (str "uploads/" filename) response/ok  (response/content-type "text/plain"))
                   )))
   )
 
@@ -44,6 +44,7 @@
    :body [:h1   (for [i (file-seq directory)] (str (.getName i)))]
    }
   )
+
 (defn download-file [filename]
   
   )

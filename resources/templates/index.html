@@ -262,11 +262,12 @@
             console.info(userid);
 
             function freshText() {
-                        index = getRandomIntInclusive(0, 99);
-                        $('#text-read').text(jufra[index]);
-                        console.info(jufra[index]);
-                        index = index + 1;
-                        console.info(index);
+                index = getRandomIntInclusive(0, 99);
+                $('#text-read').text(jufra[index]);
+                console.info(jufra[index]);
+                index = index + 1;
+                console.info(index);
+                count += 1;
             }
 
 
@@ -634,7 +635,6 @@
                 var blob = recordRTC instanceof Blob ? recordRTC : recordRTC.blob;
                 var fileType = blob.type.split('/')[0] || 'audio';
                 var fileName = wid + "-" + userid + "-" + index.toString() + "-" + count.toString();
-                count += 1;
                 if (fileType === 'audio') {
                     fileName += '.' + (!!navigator.mozGetUserMedia ? 'ogg' : 'wav');
                 } else {
@@ -684,7 +684,7 @@
 
                 request.upload.onprogress = function(event) {
                     console.log(event.loaded)
-                    callback('上传中... ' + Math.round(event.loaded / event.total * 100.0 - 20)  + "%");
+                    callback('上传中... ' + Math.round(event.loaded / event.total * 100.0 - 20) + "%");
                 };
 
                 request.upload.onload = function() {
