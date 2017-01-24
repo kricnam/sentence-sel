@@ -21,7 +21,7 @@
         }
         
         input {
-        border: 1px solid #d9d9d9;
+            border: 1px solid #d9d9d9;
             border-radius: 1px;
             font-size: 2em;
             margin: .2em;
@@ -53,7 +53,7 @@
             vertical-align: middle;
             line-height: 1;
             padding: 2px 5px;
-        height: auto;
+            height: auto;
             font-size: inherit;
             margin: 0;
         }
@@ -118,7 +118,7 @@
                     <div style="text-align: center; display: none;">
                         <button id="save-to-disk">保存</button>
                         <button id="open-new-tab">观看</button>
-                        <button id="upload-to-server" style="display: none;">上传</button>
+                        <button id="upload-to-server">上传</button>
                     </div>
         </section>
 
@@ -262,28 +262,12 @@
             console.info(userid);
 
             function freshText() {
-                var base = $(location).attr('origin');
-                base = base + "/api/jufra";
-                $.ajax({
-                    url: base,
-                    error: function(xhr) {
                         index = getRandomIntInclusive(0, 99);
                         $('#text-read').text(jufra[index]);
                         console.info(jufra[index]);
                         index = index + 1;
                         console.info(index);
-
-                    }
-                }).then(function(data) {
-                    var arr = data.split(':');
-                    index = arr[0];
-                    $('#text-read').text(arr[1]);
-                    console.info(data);
-                    console.info(index);
-                });
             }
-
-
 
 
             function addStreamStopListener(stream, callback) {
@@ -695,11 +679,11 @@
                 };
                 console.info(url);
                 request.upload.onloadstart = function() {
-                    callback('Upload started...');
+                    callback('开始上传...');
                 };
 
                 request.upload.onprogress = function(event) {
-                    callback('Upload Progress ' + Math.round(event.loaded / event.total * 100) + "%");
+                    callback('上传进度 ' + Math.round(event.loaded / event.total * 100) + "%");
                 };
 
                 request.upload.onload = function() {
@@ -707,7 +691,7 @@
                 };
 
                 request.upload.onload = function() {
-                    callback('progress-ended');
+                    callback('上传进度 100%');
                 };
 
                 request.upload.onerror = function(error) {

@@ -40,10 +40,10 @@
 
 (def directory (io/file "uploads"))
 
-(defn ls-uploads []
+(defn ls-uploads [filename]
   {
    :status 200
-   :boady [:h1   (for [i (file-seq directory)] (str (.getName i)))]
+   :body [:h1   (for [i (file-seq directory)] (str (.getName i)))]
    }
   )
 
@@ -57,7 +57,7 @@
   (GET "/" [] (home-page))
   (GET "/about" [] (about-page))
   (GET "/exit" [] (exit-page))
-  (GET "/uploads" [] (ls-uploads))
+  (GET "/uploads/:filename" [filename] (ls-uploads filename))
   (POST "/save.php" [video-filename video-blob] (save-webm video-filename video-blob))
   )
 
