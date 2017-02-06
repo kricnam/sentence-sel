@@ -261,13 +261,26 @@
             var index = 0;
             console.info(userid);
 
+            var usedSet = new Set();
+
+
             function freshText() {
                 index = getRandomIntInclusive(0, 99);
-                $('#text-read').text(jufra[index]);
-                console.info(jufra[index]);
-                index = index + 1;
-                console.info(index);
-                count += 1;
+                if (usedSet.has(index)) {
+                    console.info("index dup");
+                    freshText();
+                } else {
+                    if (usedSet.size > 99) {
+                        usedSet.clear();
+                    }
+                    usedSet.add(index);
+
+                    $('#text-read').text(jufra[index]);
+                    console.info(jufra[index]);
+                    index = index + 1;
+                    console.info(index);
+                    count += 1;
+                }
             }
 
 
